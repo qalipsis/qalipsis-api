@@ -19,5 +19,5 @@ import kotlin.reflect.KClass
 annotation class Serializable(
 
     @get:NotEmpty
-    val types: Array<KClass<*>>
+    val types: Array<KClass<*>> = []
 )

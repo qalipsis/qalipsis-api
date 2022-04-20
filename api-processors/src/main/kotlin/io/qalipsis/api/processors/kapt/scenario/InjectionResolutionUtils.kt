@@ -1,6 +1,8 @@
-package io.qalipsis.api.processors
+package io.qalipsis.api.processors.kapt.scenario
 
+import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 import io.qalipsis.api.annotations.Property
+import io.qalipsis.api.processors.kapt.TypeUtils
 import jakarta.inject.Named
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.PrimitiveType
@@ -11,11 +13,12 @@ import javax.lang.model.type.TypeMirror
  *
  * @author Eric Jessé
  */
+@KotlinPoetMetadataPreview
 internal class InjectionResolutionUtils(private val typeUtils: TypeUtils) {
 
     fun buildPropertyResolution(property: Property, paramType: TypeMirror): String {
         var isOptional = false
-        val propertyTypeName = if (typeUtils.isOptionalWithGeneric(paramType)) {
+        val propertyTypeName = if (typeUtils.isOptional(paramType)) {
             isOptional = true
             "${typeUtils.getTypeOfFirstGeneric(paramType as DeclaredType)}.class"
         } else if (paramType is PrimitiveType) {
@@ -36,11 +39,11 @@ internal class InjectionResolutionUtils(private val typeUtils: TypeUtils) {
 
     fun buildUnqualifiedResolution(paramType: TypeMirror): String {
         return when {
-            typeUtils.isOptionalWithGeneric(paramType) -> {
+            typeUtils.isOptional(paramType) -> {
                 val genericType = typeUtils.getTypeOfFirstGeneric(paramType as DeclaredType)
                 """applicationContext.findBean(${genericType}.class)"""
             }
-            typeUtils.isIterableWithGeneric(paramType) -> {
+            typeUtils.isIterable(paramType) -> {
                 val genericType = typeUtils.getTypeOfFirstGeneric(paramType as DeclaredType)
                 """($paramType) applicationContext.getConversionService().convertRequired(applicationContext.getBeansOfType(${genericType}.class), 
                     ${typeUtils.erase(paramType)}.class)""".trimIndent()
@@ -53,11 +56,11 @@ internal class InjectionResolutionUtils(private val typeUtils: TypeUtils) {
 
     fun buildNamedQualifierResolution(named: Named, paramType: TypeMirror): String {
         return when {
-            typeUtils.isOptionalWithGeneric(paramType) -> {
+            typeUtils.isOptional(paramType) -> {
                 val genericType = typeUtils.getTypeOfFirstGeneric(paramType as DeclaredType)
                 """applicationContext.findBean(${genericType}.class, io.micronaut.inject.qualifiers.Qualifiers.byName("${named.value}"))"""
             }
-            typeUtils.isIterableWithGeneric(paramType) -> {
+            typeUtils.isIterable(paramType) -> {
                 val genericType = typeUtils.getTypeOfFirstGeneric(paramType as DeclaredType)
                 """($paramType) applicationContext.getConversionService().convertRequired(applicationContext.getBeansOfType(${genericType}.class, io.micronaut.inject.qualifiers.Qualifiers.byName("${named.value}")), ${
                     typeUtils.erase(

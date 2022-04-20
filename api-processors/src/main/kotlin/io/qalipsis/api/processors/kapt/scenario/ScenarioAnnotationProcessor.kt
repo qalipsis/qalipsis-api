@@ -1,12 +1,14 @@
-package io.qalipsis.api.processors
+package io.qalipsis.api.processors.kapt.scenario
 
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterSpec
 import com.squareup.javapoet.TypeSpec
+import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 import io.micronaut.context.ApplicationContext
 import io.qalipsis.api.annotations.Property
 import io.qalipsis.api.annotations.Scenario
+import io.qalipsis.api.processors.kapt.TypeUtils
 import io.qalipsis.api.services.ServicesFiles
 import jakarta.inject.Named
 import java.io.IOException
@@ -34,6 +36,7 @@ import javax.tools.StandardLocation
  *
  * @author Eric Jessé
  */
+@KotlinPoetMetadataPreview
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
 @SupportedAnnotationTypes(ScenarioAnnotationProcessor.ANNOTATION_CLASS_NAME)
 internal class ScenarioAnnotationProcessor : AbstractProcessor() {

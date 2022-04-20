@@ -1,4 +1,4 @@
-package io.qalipsis.api.processors
+package io.qalipsis.api.processors.mappers
 
 import io.micronaut.core.annotation.AnnotationValue
 import io.micronaut.inject.annotation.NamedAnnotationMapper
@@ -8,7 +8,7 @@ import jakarta.inject.Singleton
 /**
  * Annotation mapper abstracting Micronaut from plugin implementation.
  */
-class StepConverterAnnotationMapper : NamedAnnotationMapper {
+internal class StepConverterAnnotationMapper : NamedAnnotationMapper {
 
     override fun getName(): String {
         return "io.qalipsis.api.annotations.StepConverter"

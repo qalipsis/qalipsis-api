@@ -1,23 +1,23 @@
-package io.qalipsis.api.processors
+package io.qalipsis.api.processors.mappers
 
 import io.micronaut.core.annotation.AnnotationValue
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.inject.annotation.NamedAnnotationMapper
 import io.micronaut.inject.visitor.VisitorContext
-import jakarta.inject.Singleton
 
 /**
  * Annotation mapper abstracting Micronaut from plugin implementation.
  */
-class StepDecoratorAnnotationMapper : NamedAnnotationMapper {
+internal class NoReflectionMapper : NamedAnnotationMapper {
 
     override fun getName(): String {
-        return "io.qalipsis.api.annotations.StepDecorator"
+        return "io.qalipsis.api.annotations.NoReflection"
     }
 
     override fun map(
         annotation: AnnotationValue<Annotation>,
         visitorContext: VisitorContext
     ): MutableList<AnnotationValue<*>> {
-        return mutableListOf(AnnotationValue.builder(Singleton::class.java).build())
+        return mutableListOf(AnnotationValue.builder(Introspected::class.java).build())
     }
 }

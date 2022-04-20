@@ -1,2 +1,3 @@
-io.qalipsis.api.processors.ScenarioAnnotationProcessor
-io.qalipsis.api.processors.SerializationAnnotationProcessor
+io.qalipsis.api.processors.kapt.scenario.ScenarioAnnotationProcessor
+io.qalipsis.api.processors.kapt.serialization.SerializationAnnotationProcessor
+io.qalipsis.api.processors.kapt.serialization.PortableProcessor

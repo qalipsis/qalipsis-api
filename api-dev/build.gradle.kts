@@ -31,7 +31,7 @@ kapt.useBuildCache = false
 dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly("io.aeris-consulting:catadioptre-annotations:${catadioptreVersion}")
-    api("io.github.microutils:kotlin-logging-jvm:2.0.6")
+    api("io.github.microutils:kotlin-logging-jvm:2.+")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:${kotlinCoroutinesVersion}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${kotlinCoroutinesVersion}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")

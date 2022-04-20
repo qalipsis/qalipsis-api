@@ -1,7 +1,9 @@
-package io.qalipsis.api.processors
+package io.qalipsis.api.processors.kapt
 
+import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
+import com.squareup.kotlinpoet.metadata.isObject
+import com.squareup.kotlinpoet.metadata.toImmutableKmClass
 import java.util.Optional
-import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeMirror
@@ -14,21 +16,23 @@ import javax.lang.model.util.Types
  *
  * @author Eric Jessé
  */
-internal class TypeUtils(private val elementUtils: Elements, private val typeUtils: Types) {
+@KotlinPoetMetadataPreview
+internal class TypeUtils(elementUtils: Elements, private val typeUtils: Types) {
+
+    private val mapType = typeUtils.erasure(elementUtils.getTypeElement(Map::class.java.name).asType())
 
     private val iterableType = typeUtils.erasure(elementUtils.getTypeElement(Iterable::class.java.name).asType())
+
+    private val collectionType = typeUtils.erasure(elementUtils.getTypeElement(Collection::class.java.name).asType())
 
     private val optionalType = typeUtils.erasure(elementUtils.getTypeElement(Optional::class.java.name).asType())
 
     /**
      * Verifies if the element passed as parameter is a Kotlin Object.
      */
-    fun isAKotlinObject(typeElement: TypeElement) =
-        elementUtils.getAllMembers(typeElement)
-            .any { it.kind == ElementKind.FIELD && it.simpleName.toString() == "INSTANCE" }
+    fun isAKotlinObject(typeElement: TypeElement) = typeElement.toImmutableKmClass().isObject
 
-
-    fun isIterableWithGeneric(type: TypeMirror): Boolean {
+    fun isIterable(type: TypeMirror): Boolean {
         return if (type is DeclaredType && type.typeArguments.size == 1) {
             return typeUtils.isSubtype(typeUtils.erasure(type), iterableType)
         } else {
@@ -36,9 +40,25 @@ internal class TypeUtils(private val elementUtils: Elements, private val typeUti
         }
     }
 
-    fun isOptionalWithGeneric(type: TypeMirror): Boolean {
+    fun isCollection(type: TypeMirror): Boolean {
+        return if (type is DeclaredType && type.typeArguments.size == 1) {
+            return typeUtils.isSubtype(typeUtils.erasure(type), iterableType)
+        } else {
+            false
+        }
+    }
+
+    fun isOptional(type: TypeMirror): Boolean {
         return if (type is DeclaredType && type.typeArguments.size == 1) {
             return typeUtils.isSubtype(typeUtils.erasure(type), optionalType)
+        } else {
+            false
+        }
+    }
+
+    fun isMap(type: TypeMirror): Boolean {
+        return if (type is DeclaredType && type.typeArguments.size == 2) {
+            return typeUtils.isSubtype(typeUtils.erasure(type), mapType)
         } else {
             false
         }

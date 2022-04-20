@@ -1,4 +1,4 @@
-package io.qalipsis.api.processors
+package io.qalipsis.api.processors.kapt.serialization
 
 import com.squareup.kotlinpoet.ARRAY
 import com.squareup.kotlinpoet.ClassName
@@ -12,7 +12,10 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 import com.squareup.kotlinpoet.typeNameOf
+import io.qalipsis.api.processors.kapt.AnnotationUtils
+import io.qalipsis.api.processors.kapt.TypeUtils
 import io.qalipsis.api.serialization.Serializable
 import io.qalipsis.api.services.ServicesFiles
 import java.nio.file.Path
@@ -27,7 +30,6 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.PackageElement
 import javax.lang.model.element.TypeElement
-import javax.lang.model.type.MirroredTypesException
 import javax.lang.model.util.Elements
 import javax.tools.Diagnostic
 import javax.tools.StandardLocation
@@ -35,6 +37,7 @@ import kotlin.io.path.Path
 import kotlin.reflect.KClass
 
 
+@KotlinPoetMetadataPreview
 @ExperimentalStdlibApi
 @DelicateKotlinPoetApi("Awareness of delicate aspect")
 @SupportedSourceVersion(SourceVersion.RELEASE_11)
@@ -45,7 +48,7 @@ import kotlin.reflect.KClass
 @SupportedOptions(
     SerializationAnnotationProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME
 )
-class SerializationAnnotationProcessor : AbstractProcessor() {
+internal class SerializationAnnotationProcessor : AbstractProcessor() {
 
     companion object {
 
@@ -63,6 +66,8 @@ class SerializationAnnotationProcessor : AbstractProcessor() {
 
     private lateinit var elementUtils: Elements
 
+    private lateinit var annotationUtils: AnnotationUtils
+
     private lateinit var stringElememt: TypeElement
 
     /**
@@ -79,6 +84,7 @@ class SerializationAnnotationProcessor : AbstractProcessor() {
         super.init(processingEnv)
         elementUtils = processingEnv.elementUtils
         typeUtils = TypeUtils(processingEnv.elementUtils, processingEnv.typeUtils)
+        annotationUtils = AnnotationUtils(typeUtils)
         stringElememt = elementUtils.getTypeElement("java.lang.String")
     }
 
@@ -110,7 +116,7 @@ class SerializationAnnotationProcessor : AbstractProcessor() {
 
     private fun proceedQalipsisSerialization(annotatedType: Element) {
         val annotation = annotatedType.getAnnotation(Serializable::class.java)
-        getSupportedTypes(annotation)
+        annotationUtils.getSupportedTypes { annotation.types }
             .filter { element ->
                 (element == stringElememt
                         || element.getAnnotationsByType(kotlinx.serialization.Serializable::class.java).isNotEmpty())
@@ -124,24 +130,6 @@ class SerializationAnnotationProcessor : AbstractProcessor() {
                     }
             }
             .forEach(this::createWrapper)
-    }
-
-    /**
-     * Extract the list of types specified in the annotation [Serializable].
-     */
-    private fun getSupportedTypes(annotation: Serializable): Collection<TypeElement> {
-        // Here, it is a bit tricky. It is not possible to get the classes, but the generated exception
-        // "javax.lang.model.type.MirroredTypesException: Attempt to access Class objects for TypeMirrors" actually
-        // contains the [TypeMirror]s we need. Long story here:
-        // https://area-51.blog/2009/02/13/getting-class-values-from-annotations-in-an-annotationprocessor/
-        return try {
-            annotation.types
-            null
-        } catch (e: MirroredTypesException) {
-            e.typeMirrors.mapNotNull(typeUtils::getTypeElement)
-        } catch (e: Exception) {
-            null
-        }?.takeIf(Collection<*>::isNotEmpty) ?: emptyList()
     }
 
     private fun createWrapper(annotatedType: TypeElement) {
@@ -169,39 +157,39 @@ class SerializationAnnotationProcessor : AbstractProcessor() {
             .addImport("kotlinx.serialization", "decodeFromString")
             .addImport("kotlinx.serialization", "encodeToString")
             .addImport("io.qalipsis.api.serialization", "Serializers")
-        serializationWrapperClassFile.addType(
-            TypeSpec.classBuilder(serializationWrapperClassName)
-                .addAnnotation(ClassName.bestGuess("kotlinx.serialization.ExperimentalSerializationApi"))
-                .addSuperinterface(
-                    ClassName.bestGuess("io.qalipsis.api.serialization.SerialFormatWrapper")
-                        .plusParameter(annotatedType.asClassName())
-                )
-                .addFunction(
-                    FunSpec.builder("serialize")
-                        .addModifiers(KModifier.OVERRIDE)
-                        .addParameter(ParameterSpec.builder("entity", annotatedType.asClassName()).build())
-                        .addStatement("return Serializers.json.encodeToString(entity).encodeToByteArray()")
-                        .returns(ClassName("kotlin", "ByteArray"))
-                        .build()
-                )
-                .addFunction(
-                    FunSpec.builder("deserialize")
-                        .addModifiers(KModifier.OVERRIDE)
-                        .addParameter(ParameterSpec.builder("source", ClassName("kotlin", "ByteArray")).build())
-                        .addStatement("return Serializers.json.decodeFromString(source.decodeToString())")
-                        .returns(annotatedType.asClassName())
-                        .build()
-                )
-                .addProperty(
-                    PropertySpec.builder("types", ARRAY.plusParameter(typeNameOf<KClass<*>>()), KModifier.OVERRIDE)
-                        .initializer(CodeBlock.of("""arrayOf(${annotatedType.asClassName()}::class)""")).build()
-                )
-                .addProperty(
-                    PropertySpec.builder("qualifier", ClassName("kotlin", "String"), KModifier.OVERRIDE)
-                        .initializer(CodeBlock.of(""""kjson"""")).build()
-                )
-                .build()
-        )
+            .addType(
+                TypeSpec.classBuilder(serializationWrapperClassName)
+                    .addAnnotation(ClassName.bestGuess("kotlinx.serialization.ExperimentalSerializationApi"))
+                    .addSuperinterface(
+                        ClassName.bestGuess("io.qalipsis.api.serialization.SerialFormatWrapper")
+                            .plusParameter(annotatedType.asClassName())
+                    )
+                    .addFunction(
+                        FunSpec.builder("serialize")
+                            .addModifiers(KModifier.OVERRIDE)
+                            .addParameter(ParameterSpec.builder("entity", annotatedType.asClassName()).build())
+                            .addStatement("return Serializers.json.encodeToString(entity).encodeToByteArray()")
+                            .returns(ClassName("kotlin", "ByteArray"))
+                            .build()
+                    )
+                    .addFunction(
+                        FunSpec.builder("deserialize")
+                            .addModifiers(KModifier.OVERRIDE)
+                            .addParameter(ParameterSpec.builder("source", ClassName("kotlin", "ByteArray")).build())
+                            .addStatement("return Serializers.json.decodeFromString(source.decodeToString())")
+                            .returns(annotatedType.asClassName())
+                            .build()
+                    )
+                    .addProperty(
+                        PropertySpec.builder("types", ARRAY.plusParameter(typeNameOf<KClass<*>>()), KModifier.OVERRIDE)
+                            .initializer(CodeBlock.of("""arrayOf(${annotatedType.asClassName()}::class)""")).build()
+                    )
+                    .addProperty(
+                        PropertySpec.builder("qualifier", ClassName("kotlin", "String"), KModifier.OVERRIDE)
+                            .initializer(CodeBlock.of(""""kjson"""")).build()
+                    )
+                    .build()
+            )
         serializationWrapperClassFile.build()
         serializationWrapperClassFile.build().writeTo(kaptKotlinGeneratedDir)
     }
