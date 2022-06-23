@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicLong
  * @property converter converts the raw values to forward them individually to next steps
  *
  * @param R raw type returned by [reader]
+ * @param T intermediate type from [processor] to [converter]
  * @param O output type returned by the step
  *
  * @author Eric Jessé
