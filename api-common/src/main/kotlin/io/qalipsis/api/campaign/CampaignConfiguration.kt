@@ -68,7 +68,8 @@ data class CampaignConfiguration(
 
 @Serializable
 data class ScenarioConfiguration(
-    val minionsCount: Int
+    val minionsCount: Int,
+    val executionProfileConfiguration: ExecutionProfileConfiguration
 )
 
 @Serializable
