@@ -19,9 +19,7 @@ package io.qalipsis.api.steps
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.*
-import io.qalipsis.api.context.CorrelationRecord
 import io.qalipsis.api.scenario.ScenarioSpecification
-import io.qalipsis.test.mockk.relaxedMockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -61,14 +59,5 @@ internal class ZipStepSpecificationTest {
         assertThat(
             previousStep.scenario.exists((nextStep as ZipStepSpecification<*, *>).secondaryStepName)
         ).isTrue()
-    }
-
-    @Test
-    internal fun `should add zip step with name of secondary step as next`() {
-        val previousStep = DummyStepSpecification()
-        previousStep.zip(on = "my-other-step", otherInput = relaxedMockk<CorrelationRecord<Long>>())
-
-        val expected = ZipStepSpecification<Unit, Pair<Int, Long>>("my-other-step")
-        assertEquals(expected, previousStep.nextSteps[0])
     }
 }

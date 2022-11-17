@@ -31,7 +31,7 @@ import javax.validation.constraints.NotBlank
 @Introspected
 data class ZipLastStepSpecification<INPUT, OUTPUT>(
     val secondaryStepName: @NotBlank StepName
-) : AbstractStepSpecification<INPUT?, OUTPUT?, ZipLastStepSpecification<INPUT, OUTPUT>>()
+) : AbstractStepSpecification<INPUT, Pair<INPUT, OUTPUT>, ZipLastStepSpecification<INPUT, OUTPUT>>()
 
 /**
  * Joins parallel sources that are not correlated - value from the left side is paired with the latest value received on the right side.
@@ -52,29 +52,6 @@ fun <INPUT, OTHER_INPUT> StepSpecification<*, INPUT, *>.zipLast(
 
     @Suppress("UNCHECKED_CAST")
     val step = ZipLastStepSpecification<INPUT, Pair<INPUT, OTHER_INPUT>>(secondaryStep.name)
-    this.add(step)
-    return step
-}
-
-/**
- * Variant of [zipLast] to use for auto-completion in IDEs. Once the scenario compile with this,
- * replace the operator by [zipLast] to have a strongly types output.
- */
-fun <INPUT> StepSpecification<*, INPUT, *>.zipLastUncasted(on: (scenario: ScenarioSpecification) -> StepSpecification<*, Any?, *>) =
-    this.zipLast(on = on)
-
-/**
- * Joins parallel sources that are not correlated - value from the left side is paired with the latest value received on the right side.
- *
- * @param otherInput defines the other input type from remote records.
- * @param on name of the step, which should have be specified also in the same scenario.
- */
-fun <INPUT, OTHER_INPUT> StepSpecification<*, INPUT, *>.zipLast(
-    on: String, otherInput: CorrelationRecord<OTHER_INPUT>? = null //otherInput for tests with DummyStepSpecification where OTHER_INPUT is not specified.
-): ZipLastStepSpecification<INPUT, Pair<INPUT, OTHER_INPUT>> {
-
-    @Suppress("UNCHECKED_CAST")
-    val step = ZipLastStepSpecification<INPUT, Pair<INPUT, OTHER_INPUT>>(on)
     this.add(step)
     return step
 }

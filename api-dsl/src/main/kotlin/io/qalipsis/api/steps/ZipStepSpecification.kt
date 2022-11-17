@@ -31,7 +31,7 @@ import javax.validation.constraints.NotBlank
 @Introspected
 data class ZipStepSpecification<INPUT, OUTPUT>(
     val secondaryStepName: @NotBlank StepName
-) : AbstractStepSpecification<INPUT?, OUTPUT?, ZipStepSpecification<INPUT, OUTPUT>>()
+) : AbstractStepSpecification<INPUT, Pair<INPUT, OUTPUT>, ZipStepSpecification<INPUT, OUTPUT>>()
 
 /**
  * Joins parallel sources that are not correlated.
@@ -52,30 +52,6 @@ fun <INPUT, OTHER_INPUT> StepSpecification<*, INPUT, *>.zip(
 
     @Suppress("UNCHECKED_CAST")
     val step = ZipStepSpecification<INPUT, Pair<INPUT, OTHER_INPUT>>(secondaryStep.name)
-    this.add(step)
-    return step
-}
-
-/**
- * Variant of [zip] to use for auto-completion in IDEs. Once the scenario compile with this,
- * replace the operator by [zip] to have a strongly types output.
- */
-fun <INPUT> StepSpecification<*, INPUT, *>.zipUncasted(on: (scenario: ScenarioSpecification) -> StepSpecification<*, Any?, *>) =
-    this.zip(on = on)
-
-/**
- * Joins parallel sources that are not correlated.
- *
- * @param otherInput defines the other input type from remote records.
- * @param on name of the step, which should have be specified also in the same scenario.
- */
-fun <INPUT, OTHER_INPUT> StepSpecification<*, INPUT, *>.zip(
-    on: String,
-    otherInput: CorrelationRecord<OTHER_INPUT>? = null//otherInput for tests with DummyStepSpecification where OTHER_INPUT is not specified.
-): ZipStepSpecification<INPUT, Pair<INPUT, OTHER_INPUT>> {
-
-    @Suppress("UNCHECKED_CAST")
-    val step = ZipStepSpecification<INPUT, Pair<INPUT, OTHER_INPUT>>(on)
     this.add(step)
     return step
 }
