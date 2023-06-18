@@ -104,8 +104,12 @@ allprojects {
         mavenCentral()
     }
 
+    val signingKeyId = "signing.keyId"
     signing {
-        publishing.publications.forEach { sign(it) }
+        if (System.getProperty(signingKeyId) != null || System.getenv(signingKeyId) != null) {
+            println("SIGNING CALLED")
+            publishing.publications.forEach { sign(it) }
+        }
     }
 
     val ossrhUsername: String? by project
