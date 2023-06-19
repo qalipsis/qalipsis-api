@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'feature/QALI-466-publish-the-oss-artifacts-to-sonatype'
   workflow_dispatch:
 
 jobs:
