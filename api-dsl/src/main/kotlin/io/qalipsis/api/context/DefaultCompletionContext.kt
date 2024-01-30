@@ -42,7 +42,7 @@ data class DefaultCompletionContext(
         "scenario" to scenarioName
     )
 
-    override fun toEventTags() = eventTags
+    override fun toKeyValueTags() = eventTags
 
-    override fun toMetersTags() = metersTag
+//    override fun toMetersTags() = metersTag
 }

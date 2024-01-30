@@ -17,17 +17,24 @@
 package io.qalipsis.api.meters
 
 /**
- * Tracks values that go up and down. Publishes an instantaneous sample of the gauge at publishing time.
+ * Handles publishing of meter snapshots to different databases and monitoring systems.
  *
  * @author Francisca Eze
  */
-abstract class Gauge : Meter<Gauge> {
+interface MeasurementPublisher {
+
     /**
-     * Triggers sampling of the underlying number or user-defined function that defines the value for the gauge.
-     *
-     * @return The current value.
+     * Handles setup and initialization of registered measurement publishers.
      */
-    open fun value(): Double {
-        return Double.NaN
-    }
+    suspend fun init() = Unit
+
+    /**
+     * Saves/publishes received meters to their corresponding publishing strategies.
+     */
+    suspend fun publish(meters: Collection<MeterSnapshot<*>>)
+
+    /**
+     * Shuts down all running publishers.
+     */
+    suspend fun stop() = Unit
 }

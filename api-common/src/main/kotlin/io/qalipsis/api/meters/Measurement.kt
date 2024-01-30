@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 AERIS IT Solutions GmbH
+ * Copyright 2023 AERIS IT Solutions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,17 @@
 
 package io.qalipsis.api.meters
 
-import io.micrometer.core.instrument.MeterRegistry
-
 /**
- * Service in charge of providing [io.micrometer.core.instrument.MeterRegistry] on demand.
+ * A measurement sampled from any given meter. It contains the value for that given
+ * measurement and an enum representing the value measured.
  *
- * @author Eric Jessé
+ * @author Francisca Eze
  */
-interface MeterRegistryFactory {
+interface Measurement {
 
-    /**
-     * Return a [MeterRegistry] that matches the default configuration for the implementation
-     * amended by [configuration].
-     */
-    fun getRegistry(configuration: MeterRegistryConfiguration): MeterRegistry
+    val value: Double
 
+    val statistic: Statistic
+
+    //tag  for the value of the percentile
 }

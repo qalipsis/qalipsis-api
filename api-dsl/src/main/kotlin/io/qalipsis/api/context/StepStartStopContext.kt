@@ -35,8 +35,8 @@ data class StepStartStopContext(
     val properties: Map<String, String> = emptyMap()
 ) : MonitoringTags {
 
-    override fun toEventTags(): Map<String, String> {
-        return mapOf(
+    override fun toKeyValueTags(): Map<String, String> {
+        return mutableMapOf(
             "campaign" to campaignKey,
             "scenario" to scenarioName,
             "dag" to dagId,
@@ -44,12 +44,12 @@ data class StepStartStopContext(
         )
     }
 
-    override fun toMetersTags(): Map<String, String> {
-        return mapOf(
-            "campaign" to campaignKey,
-            "scenario" to scenarioName,
-            "dag" to dagId,
-            "step" to stepName
-        )
-    }
+//    override fun toMetersTags(): Tags {
+//        return Tags.of(
+//            "campaign", campaignKey,
+//            "scenario", scenarioName,
+//            "dag", dagId,
+//            "step", stepName
+//        )
+//    }
 }

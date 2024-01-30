@@ -17,17 +17,12 @@
 package io.qalipsis.api.meters
 
 /**
- * Tracks values that go up and down. Publishes an instantaneous sample of the gauge at publishing time.
+ * Contains the measurement values for any given meter
  *
- * @author Francisca Eze
+ *  @author Francisca Eze
  */
-abstract class Gauge : Meter<Gauge> {
-    /**
-     * Triggers sampling of the underlying number or user-defined function that defines the value for the gauge.
-     *
-     * @return The current value.
-     */
-    open fun value(): Double {
-        return Double.NaN
-    }
+interface MeterSnapshot<T: Meter<T>> {
+    val meter: T
+
+    val measurements: Collection<Measurement>
 }

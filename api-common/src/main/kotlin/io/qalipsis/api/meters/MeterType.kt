@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 AERIS IT Solutions GmbH
+ * Copyright 2023 AERIS IT Solutions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,14 @@
 
 package io.qalipsis.api.meters
 
-import java.time.Duration
-
 /**
- * Specific configuration of a [io.micrometer.core.instrument.MeterRegistry] to create from scratch.
+ * Possibilities of qalipsis meters that are available.
  *
- * @author Eric Jessé
+ * @author Francisca Eze
  */
-interface MeterRegistryConfiguration {
-
-    /**
-     * Overrides the default step configured for the meter registry.
-     */
-    val step: Duration?
-
+enum class MeterType(val value: String) {
+    COUNTER("counter"),
+    GAUGE("gauge"),
+    TIMER("timer"),
+    DISTRIBUTION_SUMMARY("summary")
 }

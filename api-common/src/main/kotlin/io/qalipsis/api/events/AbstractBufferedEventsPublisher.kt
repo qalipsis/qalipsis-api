@@ -62,7 +62,7 @@ abstract class AbstractBufferedEventsPublisher(
 
     override fun start() {
         running = true
-        val latch = CountDownLatch(1)
+        val latch= CountDownLatch(1)
         publicationJob = coroutineScope.launch {
             latch.countDown()
             while (running) {

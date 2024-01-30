@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 AERIS IT Solutions GmbH
+ * Copyright 2022 AERIS IT Solutions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,24 @@
 
 package io.qalipsis.api.meters
 
-/**
- * Tracks values that go up and down. Publishes an instantaneous sample of the gauge at publishing time.
- *
- * @author Francisca Eze
- */
-abstract class Gauge : Meter<Gauge> {
+
+///**
+// * Service in charge of providing [io.micrometer.core.instrument.MeterRegistry] on demand.
+// *
+// * @author Eric Jessé
+// */
+
+
+//I AM THINKING THE METER PUBLISHER FACTORY SHOULD GET
+interface MeasurementPublisherFactory {
+
+//    /**
+//     * Return a [MeterRegistry] that matches the default configuration for the implementation
+//     * amended by [configuration].
+//     */
     /**
-     * Triggers sampling of the underlying number or user-defined function that defines the value for the gauge.
      *
-     * @return The current value.
      */
-    open fun value(): Double {
-        return Double.NaN
-    }
+    fun getPublisher(): MeasurementPublisher
+
 }

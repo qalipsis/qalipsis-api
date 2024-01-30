@@ -17,17 +17,8 @@
 package io.qalipsis.api.meters
 
 /**
- * Tracks values that go up and down. Publishes an instantaneous sample of the gauge at publishing time.
+ * Implementation of [MeterSnapshot].
  *
  * @author Francisca Eze
  */
-abstract class Gauge : Meter<Gauge> {
-    /**
-     * Triggers sampling of the underlying number or user-defined function that defines the value for the gauge.
-     *
-     * @return The current value.
-     */
-    open fun value(): Double {
-        return Double.NaN
-    }
-}
+class MeterSnapShotImpl<T : Meter<T>>(override val meter: T, override val measurements: Collection<Measurement>) : MeterSnapshot<T>

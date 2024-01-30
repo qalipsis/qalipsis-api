@@ -21,11 +21,11 @@ interface MonitoringTags {
     /**
      * Converts the context to a map that can be used as tags for logged events.
      */
-    fun toEventTags(): Map<String, String>
+    fun toKeyValueTags(): Map<String, String>
 
-    /**
-     * Converts the context to a map that can be used as tags for meters. The tags should not contain
-     * any detail about the minion, but remains at the level of step, scenario and campaign.
-     */
-    fun toMetersTags(): Map<String, String>
+//    /**
+//     * Converts the context to a map that can be used as tags for meters. The tags should not contain
+//     * any detail about the minion, but remains at the level of step, scenario and campaign.
+//     */
+//    fun toMetersTags(): Tags
 }
