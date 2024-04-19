@@ -23,7 +23,7 @@ import javax.validation.constraints.Max
 import javax.validation.constraints.Positive
 
 /**
- * Interface of data provider for qalipsis meters.
+ * Interface of data provider for [io.micrometer.core.instrument.Meter]s.
  * The implementation should be located in each plugin supporting the persistence of meters.
  *
  * @author Eric Jessé

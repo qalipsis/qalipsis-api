@@ -47,6 +47,7 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api")
     implementation("io.micronaut:micronaut-inject-java")
     implementation("io.micronaut:micronaut-validation")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-core")
 
     // Required to make the scenario projects build.
     api("io.micronaut:micronaut-runtime")

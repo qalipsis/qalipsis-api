@@ -16,18 +16,18 @@
 
 package io.qalipsis.api.meters
 
+import java.time.Duration
 
 /**
- * Service in charge of providing a measurement publisher on demand.
+ * Specific configuration of a [io.micrometer.core.instrument.MeterRegistry] to create from scratch.
  *
  * @author Eric Jessé
  */
-interface MeasurementPublisherFactory {
+interface MeterRegistryConfiguration {
 
     /**
-     *  Returns a [MeasurementPublisher] that matches the default configuration for the implementation
-     *  amended by [configuration].
+     * Overrides the default step configured for the meter registry.
      */
-    fun getPublisher(): MeasurementPublisher
+    val step: Duration?
 
 }

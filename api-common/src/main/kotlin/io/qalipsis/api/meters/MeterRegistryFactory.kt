@@ -16,18 +16,19 @@
 
 package io.qalipsis.api.meters
 
+import io.micrometer.core.instrument.MeterRegistry
+
 /**
- * A measurement sampled from any given meter. It contains an enum representing the value measured and a corresponding
- * value parameter to hold the measurement.
+ * Service in charge of providing [io.micrometer.core.instrument.MeterRegistry] on demand.
  *
- * @property value the value returned by the measurement
- * @property statistic describe the possibilities of options that can be measured
- *
- * @author Francisca Eze
+ * @author Eric Jessé
  */
-interface Measurement {
+interface MeterRegistryFactory {
 
-    val value: Double
+    /**
+     * Return a [MeterRegistry] that matches the default configuration for the implementation
+     * amended by [configuration].
+     */
+    fun getRegistry(configuration: MeterRegistryConfiguration): MeterRegistry
 
-    val statistic: Statistic
 }

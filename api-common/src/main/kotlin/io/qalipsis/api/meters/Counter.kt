@@ -16,26 +16,6 @@
 
 package io.qalipsis.api.meters
 
-/**
- * Custom interface with methods adopted from the java micrometer-core library.
- * Used to track monotonically increasing values.
- *
- * @author Francisca Eze
- */
-interface Counter : Meter<Counter> {
-    /**
-     * Update the counter by one.
-     */
-    fun increment()
+import io.micrometer.core.instrument.Counter as MicrometerCounter
 
-    /**
-     * Update the counter by `amount`.
-     * @param amount Amount to add to the counter.
-     */
-    fun increment(amount: Double)
-
-    /**
-     * Returns the cumulative count since this counter was created.
-     */
-    fun count(): Double
-}
+interface Counter : Meter<Counter>, MicrometerCounter

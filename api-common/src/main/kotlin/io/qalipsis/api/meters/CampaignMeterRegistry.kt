@@ -16,6 +16,7 @@
 
 package io.qalipsis.api.meters
 
+import io.micrometer.core.instrument.Tag
 import io.qalipsis.api.context.ScenarioName
 import io.qalipsis.api.context.StepName
 import java.util.function.ToDoubleFunction
@@ -34,21 +35,21 @@ interface CampaignMeterRegistry {
         scenarioName: ScenarioName = "",
         stepName: StepName = "",
         name: String,
-        tags: Map<String, String> = emptyMap(),
+        tags: Map<String, String> = emptyMap()
     ): Counter
 
     fun summary(
         scenarioName: ScenarioName = "",
         stepName: StepName = "",
         name: String,
-        tags: Map<String, String> = emptyMap(),
+        tags: Map<String, String> = emptyMap()
     ): DistributionSummary
 
     fun timer(
         scenarioName: ScenarioName = "",
         stepName: StepName = "",
         name: String,
-        tags: Map<String, String> = emptyMap(),
+        tags: Map<String, String> = emptyMap()
     ): Timer
 
     fun <T> gauge(
@@ -57,7 +58,7 @@ interface CampaignMeterRegistry {
         name: String,
         tags: Map<String, String> = emptyMap(),
         stateObject: T,
-        valueFunction: ToDoubleFunction<T>,
+        valueFunction: ToDoubleFunction<T>
     ): Gauge
 
     fun <T : Number> gauge(
@@ -65,7 +66,7 @@ interface CampaignMeterRegistry {
         stepName: StepName = "",
         name: String,
         tags: Map<String, String> = emptyMap(),
-        number: T,
+        number: T
     ): Gauge
 
     fun <T : Collection<*>> gaugeCollectionSize(
@@ -73,7 +74,7 @@ interface CampaignMeterRegistry {
         stepName: StepName = "",
         name: String,
         tags: Map<String, String> = emptyMap(),
-        collection: T,
+        collection: T
     ): Gauge
 
     fun <T : Map<*, *>> gaugeMapSize(
@@ -81,23 +82,23 @@ interface CampaignMeterRegistry {
         stepName: StepName = "",
         name: String,
         tags: Map<String, String> = emptyMap(),
-        map: T,
+        map: T
     ): Gauge
 
     @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun counter(name: String, tags: Map<String, String>): Counter
+    fun counter(name: String, tags: Iterable<Tag>): Counter
 
     @Deprecated(message = "Use the function with the scenario and step as argument")
     fun counter(name: String, vararg tags: String): Counter
 
     @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun summary(name: String, tags: Map<String, String>): DistributionSummary
+    fun summary(name: String, tags: Iterable<Tag>): DistributionSummary
 
     @Deprecated(message = "Use the function with the scenario and step as argument")
     fun summary(name: String, vararg tags: String): DistributionSummary
 
     @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun timer(name: String, tags: Map<String, String>): Timer
+    fun timer(name: String, tags: Iterable<Tag>): Timer
 
     @Deprecated(message = "Use the function with the scenario and step as argument")
     fun timer(name: String, vararg tags: String): Timer
@@ -105,19 +106,19 @@ interface CampaignMeterRegistry {
     @Deprecated(message = "Use the function with the scenario and step as argument")
     fun <T> gauge(
         name: String,
-        tags: Map<String, String>,
+        tags: Iterable<Tag>,
         stateObject: T,
-        valueFunction: ToDoubleFunction<T>,
+        valueFunction: ToDoubleFunction<T>
     ): T
 
     @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun <T : Number> gauge(name: String, tags: Map<String, String>, number: T): T
+    fun <T : Number> gauge(name: String, tags: Iterable<Tag>, number: T): T
 
     @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun <T : Collection<*>> gaugeCollectionSize(name: String, tags: Map<String, String>, collection: T): T
+    fun <T : Collection<*>> gaugeCollectionSize(name: String, tags: Iterable<Tag>, collection: T): T
 
     @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun <T : Map<*, *>> gaugeMapSize(name: String, tags: Map<String, String>, map: T): T
+    fun <T : Map<*, *>> gaugeMapSize(name: String, tags: Iterable<Tag>, map: T): T
 
     fun clear()
 }
