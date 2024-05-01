@@ -24,7 +24,7 @@ package io.qalipsis.api.meters
  * Holds the value of a statistical percentile or histogram count, its observed measurement
  * alongside, the measured statistic.
  *
- * @property indicator a double value representing either a statistical percentile[Statistic.PERCENTILE] or a histogram count[Statistic.HISTOGRAM_COUNT].
+ * @property observationPoint a double value representing either a statistical percentile[Statistic.PERCENTILE] or a histogram count[Statistic.HISTOGRAM_COUNT].
  *  It describes a point of interest in a statistical distribution to be evaluated.
  *
  * @author Francisca Eze
@@ -32,5 +32,5 @@ package io.qalipsis.api.meters
 class DistributionMeasurementMetric(
     override val value: Double,
     override val statistic: Statistic,
-    val indicator: Double,
+    val observationPoint: Double,
 ) : Measurement

@@ -84,6 +84,30 @@ interface CampaignMeterRegistry {
         map: T,
     ): Gauge
 
+    fun summary(
+        scenarioName: ScenarioName = "",
+        stepName: StepName = "",
+        name: String,
+        tags: Map<String, String> = emptyMap(),
+        percentiles: Collection<Double>,
+        histogramCounts: Collection<Double>?,
+        minHistogramBoundary: Double,
+        maxHistogramBoundary: Double,
+        compressionFactor: Double,
+    ): DistributionSummary
+
+    fun timer(
+        scenarioName: ScenarioName = "",
+        stepName: StepName = "",
+        name: String,
+        tags: Map<String, String> = emptyMap(),
+        percentiles: Collection<Double>,
+        histogramCounts: Collection<Double>?,
+        minHistogramBoundary: Double,
+        maxHistogramBoundary: Double,
+        compressionFactor: Double,
+    ): Timer
+
     @Deprecated(message = "Use the function with the scenario and step as argument")
     fun counter(name: String, tags: Map<String, String>): Counter
 
