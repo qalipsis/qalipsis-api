@@ -47,38 +47,31 @@ interface CampaignMeterRegistry {
     ): Counter
 
     /**
-     * Creates a new [DistributionSummary] metric to be added to the registry. This metric
-     * provides statistical data about the values observed from an operation.
-     *
-     * @param scenarioName the name of the scenario under which the summary is collected
-     * @param stepName the name of a step within the scenario
-     * @param name the name of the summary metric
-     * @param tags additional key-value pairs to associate with the summary metric
-     *
-     * @sample summaryExample1
-     */
-    fun summary(
-        scenarioName: ScenarioName = "",
-        stepName: StepName = "",
-        name: String,
-        tags: Map<String, String> = emptyMap(),
-    ): DistributionSummary
-
-    /**
      * Creates a new [Timer] metric to be added to the registry. This metric measures the duration of an operation or a task.
      *
      * @param scenarioName the name of the scenario under which the timer is recorded
      * @param stepName the name of a step within the scenario
      * @param name the name of the timer metric
      * @param tags additional key-value pairs to associate with the timer metric
+     * @param percentiles a list of values within the range of 1.0-100.0, representing specific points of observation, defaults to a list of 50.0, 75.0 and 99.9
+     * @param histogramCounts a list of values, whose frequencies within a bucket/bin in a histogram are to be observed, defaults to an empty list
+     * @param minHistogramBoundary minimum boundary within which a histogram should be created, defaults to 10.0
+     * @param maxHistogramBoundary maximum boundary within which a histogram should be created, defaults to 100.0
+     * @param compressionFactor determines the level of compression applied to the data stored
+     * i.e. how much the data is compacted to reduce memory usage. It defaults to 100.0.
      *
-     * @sample timerExample1
+     * @sample timerExample
      */
     fun timer(
         scenarioName: ScenarioName = "",
         stepName: StepName = "",
         name: String,
         tags: Map<String, String> = emptyMap(),
+        percentiles: Collection<Double> = listOf(50.0, 75.0, 99.9),
+        histogramCounts: Collection<Double> = emptyList(),
+        minHistogramBoundary: Double = 1000.0,
+        maxHistogramBoundary: Double = 10000.0,
+        compressionFactor: Double = 100.0,
     ): Timer
 
     /**
@@ -178,7 +171,7 @@ interface CampaignMeterRegistry {
      * @param compressionFactor determines the level of compression applied to the data stored
      * i.e. how much the data is compacted to reduce memory usage. It defaults to 100.0.
      *
-     * @sample summaryExample2
+     * @sample summaryExample
      */
     fun summary(
         scenarioName: ScenarioName = "",
@@ -186,39 +179,11 @@ interface CampaignMeterRegistry {
         name: String,
         tags: Map<String, String> = emptyMap(),
         percentiles: Collection<Double> = listOf(50.0, 75.0, 99.9),
-        histogramCounts: Collection<Double>?,
+        histogramCounts: Collection<Double> = emptyList(),
         minHistogramBoundary: Double = 100.0,
         maxHistogramBoundary: Double = 1000.0,
         compressionFactor: Double = 100.0,
     ): DistributionSummary
-
-    /**
-     * Creates a new [Timer] metric to be added to the registry. This metric measures the duration of an operation or a task.
-     *
-     * @param scenarioName the name of the scenario under which the timer is recorded
-     * @param stepName the name of a step within the scenario
-     * @param name the name of the timer metric
-     * @param tags additional key-value pairs to associate with the timer metric
-     * @param percentiles a list of values within the range of 1.0-100.0, representing specific points of observation, defaults to a list of 50.0, 75.0 and 99.9
-     * @param histogramCounts a list of values, whose frequencies within a bucket/bin in a histogram are to be observed, defaults to null
-     * @param minHistogramBoundary minimum boundary within which a histogram should be created, defaults to 10.0
-     * @param maxHistogramBoundary maximum boundary within which a histogram should be created, defaults to 100.0
-     * @param compressionFactor determines the level of compression applied to the data stored
-     * i.e. how much the data is compacted to reduce memory usage. It defaults to 100.0.
-     *
-     * @sample timerExample2
-     */
-    fun timer(
-        scenarioName: ScenarioName = "",
-        stepName: StepName = "",
-        name: String,
-        tags: Map<String, String> = emptyMap(),
-        percentiles: Collection<Double> = listOf(50.0, 75.0, 99.9),
-        histogramCounts: Collection<Double>?,
-        minHistogramBoundary: Double = 1000.0,
-        maxHistogramBoundary: Double = 10000.0,
-        compressionFactor: Double = 100.0,
-    ): Timer
 
     /**
      * Example usage of the `counter` function.
@@ -291,7 +256,7 @@ interface CampaignMeterRegistry {
      * Example usage of the `timer` function with default values for percentiles, histogramCounts,
      * minHistogramBoundary, maxHistogramBoundary, compressionFactor.
      */
-    private fun timerExample2() {
+    private fun timerExample() {
         timer(
             scenarioName = "scenario 1",
             stepName = "step 1",
@@ -306,22 +271,10 @@ interface CampaignMeterRegistry {
     }
 
     /**
-     * Example usage of the `timer` function.
-     */
-    private fun timerExample1() {
-        timer(
-            scenarioName = "scenario 1",
-            stepName = "step 1",
-            name = "http-requests duration",
-            tags = mapOf("environment" to "production", "region" to "us-west")
-        )
-    }
-
-    /**
      * Example usage of the `summary` function with default values for percentiles, histogramCounts,
      * minHistogramBoundary, maxHistogramBoundary, compressionFactor.
      */
-    private fun summaryExample2() {
+    private fun summaryExample() {
         summary(
             scenarioName = "scenario 1",
             stepName = "step 1",
@@ -332,18 +285,6 @@ interface CampaignMeterRegistry {
             minHistogramBoundary = 1000.0,
             maxHistogramBoundary = 10000.0,
             compressionFactor = 10.0
-        )
-    }
-
-    /**
-     * Example usage of the `summary` function.
-     */
-    private fun summaryExample1() {
-        summary(
-            scenarioName = "scenario 1",
-            stepName = "step 1",
-            name = "requests spread",
-            tags = mapOf("foo" to "bar", "region" to "us-east")
         )
     }
 
