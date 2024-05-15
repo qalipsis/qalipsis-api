@@ -85,13 +85,6 @@ interface Timer : Meter<Timer> {
     fun max(unit: TimeUnit?): Double
 
     /**
-     * Provides cumulative histogram counts. Returns the count of all events less than or equal to the bucket.
-     *
-     * @param valueNanos The histogram bucket to retrieve a count for.
-     */
-    fun histogramCountAtValue(valueNanos: Long): Double
-
-    /**
      * Specifies a percentile in the domain. It expresses the point where an observation falls within a
      * given range of other observations.
      *

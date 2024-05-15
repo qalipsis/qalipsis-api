@@ -20,11 +20,11 @@
 package io.qalipsis.api.meters
 
 /**
- * Custom measurement metric adapted for measurements involving percentiles and histogram count.
- * Holds the value of a statistical percentile or histogram count, its observed measurement
+ * Custom measurement metric adapted for measurements involving percentiles.
+ * Holds the value of a statistical percentile, its observed measurement
  * alongside, the measured statistic.
  *
- * @property observationPoint a double value representing either a statistical percentile[Statistic.PERCENTILE] or a histogram count[Statistic.HISTOGRAM_COUNT].
+ * @property observationPoint a double value representing a statistical percentile[Statistic.PERCENTILE].
  *  It describes a point of interest in a statistical distribution to be evaluated.
  *
  * @author Francisca Eze

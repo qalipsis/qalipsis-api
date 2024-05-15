@@ -26,7 +26,6 @@ package io.qalipsis.api.meters
  *  @property VALUE instantaneous values at any given time.
  *  @property MEAN represents the average value within a given set of recorded amount.
  *  @property PERCENTILE expresses where an observation falls in a range of other observations.
- *  @property HISTOGRAM_COUNT provides cumulative histogram count
  *
  *  @author Francisca Eze
  */
@@ -38,5 +37,4 @@ enum class Statistic(val value: String) {
     VALUE("value"),
     MEAN("mean"),
     PERCENTILE("percentile"),
-    HISTOGRAM_COUNT("histogram_count"),
 }
