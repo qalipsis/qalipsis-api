@@ -18,7 +18,6 @@ package io.qalipsis.api.meters
 
 import io.qalipsis.api.context.ScenarioName
 import io.qalipsis.api.context.StepName
-import java.util.function.ToDoubleFunction
 
 /**
  * Campaign lifecycle relevant meter registry.
@@ -104,7 +103,52 @@ interface CampaignMeterRegistry {
     ): DistributionSummary
 
     /**
-     * Example usage of the `counter` function.
+     * Creates a new [Gauge] metric to be added to the registry. This metric tracks instantaneous values
+     * change over time.
+     *
+     * @param name the name of the gauge metric
+     * @param tags additional key-value pairs to associate with the gauge metric
+     *
+     * @sample gaugeExampleWithVarargTags
+     */
+    fun gauge(name: String, vararg tags: String): Gauge
+
+    /**
+     * Creates a new [Counter] metric to be added to the registry. This metric measures the
+     * count of specific events collected over time.
+     *
+     * @param name the name of the counter metric
+     * @param tags additional key-value pairs to associate with the counter metric
+     *
+     * @sample counterExampleWithVarargTags
+     */
+    fun counter(name: String, vararg tags: String): Counter
+
+    /**
+     * Creates a new [DistributionSummary] metric to be added to the registry. This metric
+     * provides statistical data about the values observed/collected from an operation.
+     *
+     * @param name the name of the summary metric
+     * @param tags additional key-value pairs to associate with the summary metric
+     *
+     * @sample summaryExampleWithVarargTags
+     */
+    fun summary(name: String, vararg tags: String): DistributionSummary
+
+    /**
+     * Creates a new [Timer] metric to be added to the registry. This metric measures the duration of an operation or a task.
+     *
+     * @param name the name of the timer metric
+     * @param tags additional key-value pairs to associate with the timer metric
+     *
+     * @sample timerExampleWithVarargTags
+     */
+    fun timer(name: String, vararg tags: String): Timer
+
+    fun clear()
+
+    /**
+     * Example usage of the `counter` function with tags as a [Map].
      */
     private fun counterExample() {
         counter(
@@ -116,7 +160,17 @@ interface CampaignMeterRegistry {
     }
 
     /**
-     * Example usage of the `gauge` function with a number param.
+     * Example usage of the `counter` function with vararg tags.
+     */
+    private fun counterExampleWithVarargTags() {
+        counter(
+            name = "counter name",
+            tags = arrayOf("scenario", "scenario-1", "foo", "bar", "hello", "world", "step", "test-step")
+        )
+    }
+
+    /**
+     * Example usage of the `gauge` function with tags as a [Map].
      */
     private fun gaugeExample() {
         gauge(
@@ -129,7 +183,17 @@ interface CampaignMeterRegistry {
 
 
     /**
-     * Example usage of the `timer` function.
+     * Example usage of the `gauge` function with vararg tags.
+     */
+    private fun gaugeExampleWithVarargTags() {
+        gauge(
+            name = "gauge name",
+            tags = arrayOf("tag-1", "value-1", "tag-2", "value-2"),
+        )
+    }
+
+    /**
+     * Example usage of the `timer` function with tags as a [Map].
      */
     private fun timerExample() {
         timer(
@@ -142,7 +206,17 @@ interface CampaignMeterRegistry {
     }
 
     /**
-     * Example usage of the `summary` function.
+     * Example usage of the `timer` function with vararg tags.
+     */
+    private fun timerExampleWithVarargTags() {
+        timer(
+            name = "http-requests duration",
+            tags = arrayOf("environment", "production", "region", "us-west", "stepName", "step-2"),
+        )
+    }
+
+    /**
+     * Example usage of the `summary` function with tags as a [Map].
      */
     private fun summaryExample() {
         summary(
@@ -154,40 +228,14 @@ interface CampaignMeterRegistry {
         )
     }
 
-    @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun counter(name: String, tags: Map<String, String>): Counter
+    /**
+     * Example usage of the `summary` function with vararg tags.
+     */
+    private fun summaryExampleWithVarargTags() {
+        summary(
+            name = "requests spread",
+            tags = arrayOf("foo", "bar", "region", "us-east", "hello", "world", "scenario", "scenario-2"),
+        )
+    }
 
-    @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun counter(name: String, vararg tags: String): Counter
-
-    @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun summary(name: String, tags: Map<String, String>): DistributionSummary
-
-    @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun summary(name: String, vararg tags: String): DistributionSummary
-
-    @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun timer(name: String, tags: Map<String, String>): Timer
-
-    @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun timer(name: String, vararg tags: String): Timer
-
-    @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun <T> gauge(
-        name: String,
-        tags: Map<String, String>,
-        stateObject: T,
-        valueFunction: ToDoubleFunction<T>,
-    ): T
-
-    @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun <T : Number> gauge(name: String, tags: Map<String, String>, number: T): T
-
-    @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun <T : Collection<*>> gaugeCollectionSize(name: String, tags: Map<String, String>, collection: T): T
-
-    @Deprecated(message = "Use the function with the scenario and step as argument")
-    fun <T : Map<*, *>> gaugeMapSize(name: String, tags: Map<String, String>, map: T): T
-
-    fun clear()
 }

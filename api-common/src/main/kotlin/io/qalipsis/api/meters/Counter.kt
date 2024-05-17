@@ -30,7 +30,7 @@ interface Counter : Meter<Counter> {
 
     /**
      * Update the counter by `amount`.
-     * @param amount Amount to add to the counter.
+     * @param amount amount to add to the counter.
      */
     fun increment(amount: Double)
 

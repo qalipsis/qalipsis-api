@@ -30,4 +30,26 @@ interface Gauge : Meter<Gauge> {
     fun value(): Double {
         return Double.NaN
     }
+
+    /**
+     * Update the gauge by one.
+     */
+    fun increment(): Double
+
+    /**
+     * Decrease the value of the gauge by one.
+     */
+    fun decrement(): Double
+
+    /**
+     * Decrease the value of the gauge by the amount.
+     * @param amount amount to subtract from the gauge value.
+     */
+    fun decrement(amount: Double): Double
+
+    /**
+     * Increase the gauge value by the `amount`.
+     * @param amount amount to add to the gauge value.
+     */
+    fun increment(amount: Double): Double
 }
