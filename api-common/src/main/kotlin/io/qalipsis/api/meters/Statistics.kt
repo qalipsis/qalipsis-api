@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 AERIS IT Solutions GmbH
+ * Copyright 2024 AERIS IT Solutions GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,14 @@
 package io.qalipsis.api.meters
 
 /**
- * Tracks the statistical distribution of observations recorded for a given campaign.
+ * Meter to track the global statistics of observations.
  *
  * @author Francisca Eze
  */
-interface DistributionSummary : Meter<DistributionSummary> {
+interface Statistics : Meter<Statistics> {
+
     /**
-     * Updates the statistics kept by the summary with the specified amount.
+     * Updates the statistics meter with the specified amount.
      *
      * @param amount amount for an event being measured. If the amount is less than 0 the value will be dropped.
      */
@@ -36,17 +37,17 @@ interface DistributionSummary : Meter<DistributionSummary> {
     fun count(): Long
 
     /**
-     * Returns the total amount of all recorded events.
+     * Returns the total sum of the recorded observations.
      */
     fun totalAmount(): Double
 
     /**
-     * Returns the distribution average for all recorded events.
+     * Returns the distribution average of the recorded observations.
      */
     fun mean(): Double
 
     /**
-     * Returns the maximum observation recorded for a single event.
+     * Returns the max value from the observations recorded.
      */
     fun max(): Double
 
@@ -57,5 +58,4 @@ interface DistributionSummary : Meter<DistributionSummary> {
      * @param percentile the percentage point to be observed
      */
     fun percentile(percentile: Double): Double
-
 }
