@@ -23,7 +23,7 @@ import java.time.Instant
  *
  * @author Francisca Eze
  */
-interface StatisticsFactory {
+interface MetricsManager {
 
     /**
      * Creates a new [Counter] metric to be added to the registry. This metric measures the
@@ -69,18 +69,6 @@ interface StatisticsFactory {
      * @sample summaryExample
      */
     fun summary(name : String, percentiles: Set<Double> = emptySet(), tags : Map<String, String>) : DistributionSummary
-
-    /**
-     * Creates a new [Statistics] metric to be added to the registry. This metric
-     * provides the global statistical data about the values observed/collected from an operation.
-     *
-     * @param name the name of the summary metric
-     * @param percentiles a list of values within the range of 1.0-100.0, representing specific points of observation, defaults to an empty set
-     * @param tags additional key-value pairs to associate with the summary metric
-     *
-     * @sample statisticsExample
-     */
-    fun statistics(name : String, percentiles: Set<Double> = emptySet(), tags : Map<String, String>) : Statistics
 
     /**
      * Returns a summary snapshot of the measurements collected for each meter for a given step.
@@ -130,17 +118,6 @@ interface StatisticsFactory {
         summary(
             name = "requests Summary",
             tags = mapOf("foo" to "bar", "region" to "us-east", "step" to "step-name"),
-            percentiles = setOf(99.0, 75.0) // Defaults to an emptySet().
-        )
-    }
-
-    /**
-     * Example usage of the `statistics` function with tags.
-     */
-    private fun statisticsExample() {
-        statistics(
-            name = "global-statistics",
-            tags = mapOf("environment" to "production", "region" to "us-west", "step" to "campaign-stats"),
             percentiles = setOf(99.0, 75.0) // Defaults to an emptySet().
         )
     }
