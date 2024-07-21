@@ -16,12 +16,24 @@
 
 package io.qalipsis.api.meters
 
+import java.time.temporal.ChronoUnit
+
 /**
  * Tracks the number of hits measured per a configured unit of time, default to seconds.
  *
  * @author Francisca Eze
  */
 interface Throughput : Meter<Throughput> {
+
+    /**
+     * The configured percentiles to generate in snapshots.
+     */
+    val percentiles: Collection<Double>
+
+    /**
+     * The configured time unit of the measurement time, defaults to seconds.
+     */
+    val unit: ChronoUnit
 
     /**
      * Returns the most recent measured throughput.
@@ -35,12 +47,10 @@ interface Throughput : Meter<Throughput> {
      */
     fun max(): Double
 
-
     /**
      * Returns the average throughput observed.
      */
     fun mean(): Double
-
 
     /**
      * Specifies a percentile in the domain. It expresses the point where an observation falls within a
@@ -55,9 +65,13 @@ interface Throughput : Meter<Throughput> {
      */
     fun total(): Double
 
+    /**
+     * Increases the count of hits in the current time frame.
+     */
+    fun record(amount: Int = 1) = record(amount.toDouble())
 
     /**
-     * Updates the statistics kept by the meter by 1.
+     * Increases the count of hits in the current time frame.
      */
-    fun record()
+    fun record(amount: Double)
 }

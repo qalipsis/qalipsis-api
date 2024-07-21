@@ -17,44 +17,45 @@
 package io.qalipsis.api.meters
 
 /**
- * Measures the relationship between two independently tracked [Gauge] metrics.
+ * Measures the ratio between two independently tracked measurements: a
+ * cumulative value and the other being its corresponding benchmark.
  *
  * @author Francisca Eze
  */
 interface Rate : Meter<Rate> {
 
     /**
-     * Calculates an instantaneous result gotten from dividing two gauge meters.
+     * Calculates an instantaneous ratio gotten from dividing the benchmark against its cumulative value.
      */
     fun current(): Double {
         return Double.NaN
     }
 
     /**
-     * Decrease the value of the primary gauge by the `amount`.
+     * Decrease the value of the cumulative measurement by the `amount`.
      *
      * @param amount amount to subtract from the gauge value
      */
-    fun decrementPrimaryMetric(amount: Double = 1.0): Double
+    fun decrementTotal(amount: Double = 1.0)
 
     /**
-     * Increase the value of the primary gauge by the `amount`.
+     * Increase the value of the cumulative measurement by the `amount`.
      *
      * @param amount amount to add to the gauge value
      */
-    fun incrementPrimaryMetric(amount: Double = 1.0): Double
+    fun incrementTotal(amount: Double = 1.0)
 
     /**
-     * Decrease the value of the secondary gauge by the `amount`.
+     * Decrease the value of the benchmark measurement by the `amount`.
      *
      * @param amount amount to subtract from the gauge value
      */
-    fun decrementSecondaryMetric(amount: Double = 1.0): Double
+    fun decrementBenchmark(amount: Double = 1.0)
 
     /**
-     * Increase the value of the secondary gauge by the `amount`.
+     * Increase the value of the cumulative measurement by the `amount`.
      *
      * @param amount amount to add to the gauge value
      */
-    fun incrementSecondaryMetric(amount: Double = 1.0): Double
+    fun incrementBenchmark(amount: Double = 1.0)
 }

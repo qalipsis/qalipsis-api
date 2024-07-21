@@ -18,7 +18,7 @@ package io.qalipsis.api.meters
 
 import io.qalipsis.api.context.ScenarioName
 import io.qalipsis.api.context.StepName
-import java.time.Duration
+import java.time.temporal.ChronoUnit
 import java.util.Collections.emptyList
 import java.util.Collections.emptyMap
 
@@ -63,7 +63,7 @@ interface CampaignMeterRegistry {
         stepName: StepName,
         name: String,
         tags: Map<String, String> = emptyMap(),
-        percentiles: Collection<Double> = emptyList()
+        percentiles: Collection<Double> = emptyList(),
     ): Timer
 
     /**
@@ -101,7 +101,7 @@ interface CampaignMeterRegistry {
         stepName: StepName,
         name: String,
         tags: Map<String, String> = emptyMap(),
-        percentiles: Collection<Double> = emptyList()
+        percentiles: Collection<Double> = emptyList(),
     ): DistributionSummary
 
     /**
@@ -128,7 +128,7 @@ interface CampaignMeterRegistry {
 
     /**
      * Creates a new [Rate] metric to be added to the registry. This metric calculates the
-     * ratio between two independently tracked [Gauge] metrics.
+     * ratio between two independently tracked measurements.
      *
      * @param scenarioName the name of the scenario under which the rate is collected
      * @param stepName the name of a step within the scenario
@@ -145,15 +145,28 @@ interface CampaignMeterRegistry {
     ): Rate
 
     /**
+     * Creates a new [Rate] metric to be added to the registry. This metric calculates the
+     * ratio between two independently tracked measurements.
+     *
+     * @param name the name of the metric
+     * @param tags additional key-value pairs to associate with the rate metric
+     *
+     * @sample rateExampleWithVarargTags
+     */
+    fun rate(
+        name: String,
+        vararg tags: String,
+    ): Rate
+
+    /**
      * Creates a new [Throughput] metric to be added to the registry. This metric
      * tracks the number of hits measured per a configured unit of time, default to seconds.
      *
      * @param scenarioName the name of the scenario within which the throughput is measured
      * @param stepName the name of a step within the scenario
      * @param name the name of the metric
-     * @param tags additional key-value pairs to associate with the rate metric
-     * @param measurementInterval the duration over which an operation is measured. It determines the duration of time
-     * between each throughput calculation, defaults to seconds.
+     * @param tags additional key-value pairs to associate with the metric
+     * @param unit the time unit for the configured measurement interval, defaults to [ChronoUnit.SECONDS]
      * @param percentiles a list of values within the range of 1.0-100.0, representing specific points of observation,
      * defaults to an empty list
      *
@@ -163,9 +176,9 @@ interface CampaignMeterRegistry {
         scenarioName: ScenarioName,
         stepName: StepName,
         name: String,
-        measurementInterval: Duration,
+        unit: ChronoUnit = ChronoUnit.SECONDS,
         percentiles: Collection<Double> = emptyList(),
-        tags: Map<String, String> = emptyMap()
+        tags: Map<String, String> = emptyMap(),
     ): Throughput
 
     /**
@@ -173,6 +186,7 @@ interface CampaignMeterRegistry {
      * tracks the number of hits measured per a configured unit of time, default to seconds.
      *
      * @param name the name of the metric
+     * @param unit the time unit for the configured measurement interval, defaults to [ChronoUnit.SECONDS]
      * @param tags additional key-value pairs to associate with this meter
      *
      * @sample throughputExampleWithVarargTags
@@ -291,6 +305,16 @@ interface CampaignMeterRegistry {
         )
     }
 
+    /**
+     * Example usage of the `rate` function with vararg tags.
+     */
+    private fun rateExampleWithVarargTags() {
+        rate(
+            name = "requests rate",
+            tags = arrayOf("foo", "bar", "region", "us-east")
+        )
+    }
+
 
     /**
      * Example usage of the `rate` function with tags as a [Map].
@@ -314,7 +338,7 @@ interface CampaignMeterRegistry {
             name = "requests throughput",
             tags = mapOf("foo" to "bar", "region" to "us-east"),
             percentiles = emptyList(),
-            measurementInterval = Duration.ofSeconds(1)
+            unit = ChronoUnit.SECONDS
         )
     }
 
